@@ -26,6 +26,18 @@ public static class NarcoNetConstants
 
     // Updater
     public const string UpdaterExecutableName = "NarcoNet.Updater.exe";
+    
+    /// <summary>
+    /// Gets the platform-specific updater executable name
+    /// </summary>
+    public static string GetUpdaterExecutableName()
+    {
+        // On Windows, use .exe; on Linux, use no extension (or could be a shell script wrapper)
+        return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Windows) 
+            ? "NarcoNet.Updater.exe" 
+            : "NarcoNet.Updater";
+    }
 
     // Logging Prefixes
     public const string LogPrefix = "[MadManBeavis-NarcoNet]";
