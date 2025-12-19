@@ -85,7 +85,8 @@ public class ConfigService
 
                                                # NarcoNet internal (synced via built-in paths, excluded from user sync paths)
                                                # Note: These exclusions are automatically added but shown here for reference
-                                               - NarcoNet.Updater.exe
+                                               - NarcoNet.Updater.exe       # Windows updater
+                                               - NarcoNet.Updater           # Linux updater
                                                - ../BepInEx/plugins/MadManBeavis-NarcoNet/**
                                                - ../BepInEx/patchers/MadManBeavis-NarcoNet-Patcher.dll
 
@@ -202,7 +203,8 @@ public class ConfigService
         // Add built-in exclusions to prevent NarcoNet components from being synced via user-configured paths
         var builtInExclusions = new List<string>
         {
-            "NarcoNet.Updater.exe",
+            "NarcoNet.Updater.exe",      // Windows updater
+            "NarcoNet.Updater",          // Linux updater
             "../BepInEx/plugins/MadManBeavis-NarcoNet/**",
             "../BepInEx/patchers/MadManBeavis-NarcoNet-Patcher.dll"
         };

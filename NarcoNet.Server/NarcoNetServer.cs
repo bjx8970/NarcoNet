@@ -86,12 +86,13 @@ public class NarcoNetServer(
             await syncService.DetectStartupChangesAsync(config.SyncPaths, config);
 
             // Check for files that will be synced to clients
-            string updaterPath = Path.Combine(Directory.GetCurrentDirectory(), "NarcoNet.Updater.exe");
+            string updaterExecutableName = NarcoNetConstants.GetUpdaterExecutableName();
+            string updaterPath = Path.Combine(Directory.GetCurrentDirectory(), updaterExecutableName);
             string clientPluginDir = Path.Combine(Directory.GetCurrentDirectory(), @"..\", "BepInEx", "plugins", "MadManBeavis-NarcoNet");
 
             logger.LogDebug(!File.Exists(updaterPath)
-                ? "NarcoNet.Updater.exe not found in SPT root - client updates disabled"
-                : "NarcoNet.Updater.exe found - client updates enabled");
+                ? $"{updaterExecutableName} not found in SPT root - client updates disabled"
+                : $"{updaterExecutableName} found - client updates enabled");
 
             logger.LogDebug(!Directory.Exists(clientPluginDir)
                 ? "BepInEx/plugins/MadManBeavis-NarcoNet directory not found - client plugin sync disabled"
