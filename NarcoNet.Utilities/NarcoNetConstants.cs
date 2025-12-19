@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace NarcoNet.Utilities;
 
 /// <summary>
@@ -29,12 +31,12 @@ public static class NarcoNetConstants
     
     /// <summary>
     /// Gets the platform-specific updater executable name
+    /// Windows: NarcoNet.Updater.exe, Linux: NarcoNet.Updater
     /// </summary>
     public static string GetUpdaterExecutableName()
     {
         // On Windows, use .exe; on Linux, use no extension (or could be a shell script wrapper)
-        return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
-            System.Runtime.InteropServices.OSPlatform.Windows) 
+        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
             ? "NarcoNet.Updater.exe" 
             : "NarcoNet.Updater";
     }
