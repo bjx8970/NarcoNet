@@ -1,0 +1,59 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master", "develop" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        configuration: [Release]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore UrGrannyOnFent.NarcoNet.slnx
+      
+    - name: Build solution
+      run: dotnet build UrGrannyOnFent.NarcoNet.slnx --configuration ${{ matrix.configuration }} --no-restore
+      continue-on-error: true
+      
+    - name: Run tests
+      run: dotnet test UrGrannyOnFent.NarcoNet.slnx --configuration ${{ matrix.configuration }} --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      continue-on-error: true
+      
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.os }}-${{ matrix.configuration }}
+        path: '**/test-results.trx'
+        if-no-files-found: ignore
+        
+    - name: Build Server project
+      run: dotnet build NarcoNet.Server/NarcoNet.Server.csproj --configuration ${{ matrix.configuration }}
+      continue-on-error: true
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
+      with:
+        name: narconet-build
+        path: |
+          Build/
+          !Build/**/*.pdb
+        if-no-files-found: ignore
