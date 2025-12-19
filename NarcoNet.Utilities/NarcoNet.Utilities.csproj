@@ -4,7 +4,15 @@
         <TargetFramework>net472</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <!-- Check if Unity references exist -->
+        <UnityAvailable Condition="Exists('..\References\UnityEngine.dll')">true</UnityAvailable>
+        <UnityAvailable Condition="!Exists('..\References\UnityEngine.dll')">false</UnityAvailable>
     </PropertyGroup>
+    
+    <!-- Exclude Unity-dependent files when Unity is not available -->
+    <ItemGroup Condition="'$(UnityAvailable)' == 'false'">
+        <Compile Remove="ColorExtensions.cs" />
+    </ItemGroup>
 
     <!-- Generate version constant at compile time -->
     <Target Name="GenerateVersionFile" BeforeTargets="BeforeCompile">
@@ -27,7 +35,7 @@ public static class NarcoNetVersion
         </ItemGroup>
     </Target>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(UnityAvailable)' == 'true'">
         <Reference Include="UnityEngine">
             <HintPath>..\References\UnityEngine.dll</HintPath>
         </Reference>

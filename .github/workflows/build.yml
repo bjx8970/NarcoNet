@@ -28,11 +28,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore UrGrannyOnFent.NarcoNet.slnx
       
-    - name: Build solution
+    - name: Build Utilities (without Unity dependencies)
+      run: dotnet build NarcoNet.Utilities/NarcoNet.Utilities.csproj --configuration ${{ matrix.configuration }} --no-restore
+      
+    - name: Build Server project
+      run: dotnet build NarcoNet.Server/NarcoNet.Server.csproj --configuration ${{ matrix.configuration }} --no-restore
+      
+    - name: Build full solution (may fail on Unity-dependent projects)
       run: dotnet build UrGrannyOnFent.NarcoNet.slnx --configuration ${{ matrix.configuration }} --no-restore
       continue-on-error: true
       
-    - name: Run tests
+    - name: Run tests (may fail on Unity-dependent tests)
       run: dotnet test UrGrannyOnFent.NarcoNet.slnx --configuration ${{ matrix.configuration }} --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
       continue-on-error: true
       
@@ -44,10 +50,6 @@ jobs:
         path: '**/test-results.trx'
         if-no-files-found: ignore
         
-    - name: Build Server project
-      run: dotnet build NarcoNet.Server/NarcoNet.Server.csproj --configuration ${{ matrix.configuration }}
-      continue-on-error: true
-      
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
